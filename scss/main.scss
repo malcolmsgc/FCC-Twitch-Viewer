@@ -1,6 +1,6 @@
 $header-col: #5a3e85;
-$canvas-col: #fafafa;
-$inactive-col: #b891b9 ;
+$canvas-col:  #0e9dd9;
+$inactive-col: #fafafa;
 $online-col: pink;
 $offline-col: purple;
 
@@ -27,6 +27,13 @@ nav {
     padding: 0;
 }
 
+header {
+    color: $inactive-col;
+    font-size: 3.5rem;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px #000;
+}
+
 
 li {
     padding: 1em;
@@ -45,18 +52,29 @@ ul {
 
 .tab {
   flex-basis: 4rem;
+  font-size: 1.3em;
   text-align: center;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
   background-color: $inactive-col;
+  &:hover { 
+      background-color: lighten($canvas-col, 25%);
+  }
   
 }
 
 .active-tab {
     background-color: $canvas-col;
     box-shadow: -5px 0px 3px -3px rgba(50, 50, 50, 0.6);
+    &:hover { 
+      background-color: $canvas-col;
+    }
     &+li {
-        box-shadow: inset 3px -2px 10px darken($inactive-col, 10%);
+        box-shadow: inset 3px -2px 10px darken($inactive-col, 20%);
+        &:hover { 
+            box-shadow: inset 1.5px 0px 8px -2px darken($inactive-col, 65%);
+
+        }
     }
 }
 
