@@ -1,0 +1,48 @@
+$header-col: green;
+$canvas-col: white;
+$inactive-col: slategrey ;
+$online-col: pink;
+$offline-col: purple;
+
+%flex {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+body {
+    background-color: $canvas-col;
+    margin: 0;
+}
+
+header, nav {
+    padding: 1rem;
+    min-height: 40px;
+    background-color: $header-col;
+    font-family: 'Droid Sans', sans-serif;
+}
+
+nav {
+    padding: 0;
+}
+
+
+li {
+    padding: 1em;
+    border: 1px solid black;
+    border-bottom: 0;
+    }
+
+ul {
+    @extend %flex;
+    margin: 0;
+    list-style: none;
+    justify-content: flex-end;
+    align-items: stretch;
+}
+
+.active-tab {
+    background-color: $canvas-col;
+    box-shadow: 1px -4px 10px darken($inactive-col, 10%);
+}
