@@ -5,13 +5,13 @@ ul {
   align-items: center; }
 
 body {
-  background-color: white;
+  background-color: #fafafa;
   margin: 0; }
 
 header, nav {
   padding: 1rem;
   min-height: 40px;
-  background-color: green;
+  background-color: #5a3e85;
   font-family: 'Droid Sans', sans-serif; }
 
 nav {
@@ -28,8 +28,17 @@ ul {
   justify-content: flex-end;
   align-items: stretch; }
 
+.tab {
+  flex-basis: 4rem;
+  text-align: center;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  background-color: #b891b9; }
+
 .active-tab {
-  background-color: white;
-  box-shadow: 1px -4px 10px #5a6773; }
+  background-color: #fafafa;
+  box-shadow: -5px 0px 3px -3px rgba(50, 50, 50, 0.6); }
+  .active-tab + li {
+    box-shadow: inset 3px -2px 10px #a472a5; }
 
 /*# sourceMappingURL=main.css.map */
