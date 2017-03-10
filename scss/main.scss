@@ -36,9 +36,7 @@ header {
 
 
 li {
-    padding: 1em;
-    border: 1px solid black;
-    border-bottom: 0;
+    
     
     }
 
@@ -57,20 +55,37 @@ ul {
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
   background-color: $inactive-col;
+  padding: 1em;
+  border: 1px solid black;
+  border-bottom: 0;
+  background-image:
+    linear-gradient(
+      to top,
+      rgba(50, 50, 50, 0.6),
+      $inactive-col 10%
+    );
   &:hover { 
       background-color: lighten($canvas-col, 25%);
+      background-image:
+        linear-gradient(
+        to top,
+        rgba(50, 50, 50, 0.6),
+        lighten($canvas-col, 25%) 10%
+    );
   }
   
 }
 
 .active-tab {
     background-color: $canvas-col;
+    background-image: none;
     box-shadow: -5px 0px 3px -3px rgba(50, 50, 50, 0.6);
     &:hover { 
       background-color: $canvas-col;
+      background-image: none;
     }
     &+li {
-        box-shadow: inset 3px -2px 10px darken($inactive-col, 20%);
+        box-shadow: inset 2px 0px 8px -1px rgba(50, 50, 50, 0.6);
         &:hover { 
             box-shadow: inset 1.5px 0px 8px -2px darken($inactive-col, 65%);
 
