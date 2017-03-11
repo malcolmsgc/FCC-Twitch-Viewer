@@ -1,4 +1,4 @@
-ul {
+ul, #channel-list li {
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
@@ -55,5 +55,9 @@ ul {
     box-shadow: inset 2px 0px 8px -1px rgba(50, 50, 50, 0.6); }
     .active-tab + li:hover {
       box-shadow: inset 1.5px 0px 8px -2px #545454; }
+
+#channel-list {
+  justify-content: flex-start;
+  flex-flow: column wrap; }
 
 /*# sourceMappingURL=main.css.map */

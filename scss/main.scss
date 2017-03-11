@@ -87,8 +87,14 @@ ul {
         box-shadow: inset 2px 0px 8px -1px rgba(50, 50, 50, 0.6);
         &:hover { 
             box-shadow: inset 1.5px 0px 8px -2px darken($inactive-col, 65%);
-
         }
     }
 }
 
+#channel-list{
+    justify-content: flex-start;
+    flex-flow: column wrap;
+    & li {
+        @extend %flex;
+    }
+}
