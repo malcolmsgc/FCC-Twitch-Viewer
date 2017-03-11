@@ -1,8 +1,9 @@
 $header-col: #5a3e85;
 $canvas-col:  #0e9dd9;
 $inactive-col: #fafafa;
-$online-col: pink;
-$offline-col: purple;
+$online-col: #055818;
+$online-col-secondary: #1ae20d;
+$offline-col: #4a414a;
 
 %flex {
     display: flex;
@@ -34,15 +35,14 @@ header {
     text-shadow: 1px 1px 2px #000;
 }
 
+main {}
 
-li {
-    
-    
-    }
+li {}
 
 ul {
     @extend %flex;
     margin: 0;
+    padding: 0;
     list-style: none;
     justify-content: flex-end;
     align-items: stretch;
@@ -91,10 +91,43 @@ ul {
     }
 }
 
+.logo {
+    border-radius: 100%;
+    
+    height: 60px;
+    width: 60px;
+}
+
+.online {
+    background-color: $online-col;
+    &>.logo {
+        border: 2px solid $online-col-secondary;
+    }
+}
+
+.offline {
+    background-color: $offline-col;
+    &>.logo {
+        border: 2px solid $inactive-col;
+    }
+}
+
 #channel-list{
     justify-content: flex-start;
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
+    padding: 1.5em;
+    min-height: 100%;
     & li {
-        @extend %flex;
+        @extend %flex;   
+        flex: 1 1 auto;
+        border: 1px solid #000;
+        border-top: none;
+        padding: 0.5em;
+        &:first-of-type { 
+            border-radius: 6px 6px 0 0;
+        }
+        &:last-of-type { 
+            border-radius: 0 0 6px 6px;
+        }
     }
 }

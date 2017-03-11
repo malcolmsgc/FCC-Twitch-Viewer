@@ -25,6 +25,7 @@ header {
 
 ul {
   margin: 0;
+  padding: 0;
   list-style: none;
   justify-content: flex-end;
   align-items: stretch; }
@@ -56,8 +57,34 @@ ul {
     .active-tab + li:hover {
       box-shadow: inset 1.5px 0px 8px -2px #545454; }
 
+.logo {
+  border-radius: 100%;
+  height: 60px;
+  width: 60px; }
+
+.online {
+  background-color: #055818; }
+  .online > .logo {
+    border: 2px solid #1ae20d; }
+
+.offline {
+  background-color: #4a414a; }
+  .offline > .logo {
+    border: 2px solid #fafafa; }
+
 #channel-list {
   justify-content: flex-start;
-  flex-flow: column wrap; }
+  flex-flow: column nowrap;
+  padding: 1.5em;
+  min-height: 100%; }
+  #channel-list li {
+    flex: 1 1 auto;
+    border: 1px solid #000;
+    border-top: none;
+    padding: 0.5em; }
+    #channel-list li:first-of-type {
+      border-radius: 6px 6px 0 0; }
+    #channel-list li:last-of-type {
+      border-radius: 0 0 6px 6px; }
 
 /*# sourceMappingURL=main.css.map */
