@@ -10,18 +10,18 @@ https://wind-bow.glitch.me/twitch-api/channels/freecodecamp
 */
 
 function fetchStatus (streams = ['freecodecamp']) {
-    Promise
-        .all( streams.map( stream => {
-            const   statusResult = fetch('https://wind-bow.glitch.me/twitch-api/streams/' + stream);
-                    statusResult
-                        .then (result => result.json())
-                        .then (jsonObj => { console.log(jsonObj);
-                            console.log(`{${stream}, online: ${jsonObj['stream'] !== null}}`); 
-                            return {stream, online: jsonObj['stream'] !== null}})
-                        .catch(err => (console.log(err)));
-    }
-        ))
-        .then( (resultsArray) => { console.log(resultsArray) } )
+    Promise.all( streams.map( stream => fetch('https://wind-bow.glitch.me/twitch-api/streams/' + stream) ) )
+        .then ( (responses) => 
+        Promise.all( responses.map(response => response.json()) )
+        )
+        .then ( (json) => {console.log(json)} );
     
 
 } 
+
+
+                       /* .then (result => result.json())
+                        .then (jsonObj => { console.log(jsonObj);
+                            console.log(`{${stream}, online: ${jsonObj['stream'] !== null}}`); 
+                            return {stream, online: jsonObj['stream'] !== null}})
+                        .catch(err => (console.log(err)));*/
