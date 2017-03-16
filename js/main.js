@@ -24,7 +24,12 @@ Arguments should be strings`);
     return  Promise.all( streams.map( stream => fetch('https://wind-bow.glitch.me/twitch-api/streams/' + stream) ) )
             .then ( responses => Promise.all( responses.map(response => response.json()) ) )
             .then ( json => 
-                json.map( (obj, i) => { return {stream: streams[i], online: obj['stream'] !== null} } ) )
+                json.map( (obj, i) => { 
+                    return {
+                        stream: streams[i],
+                        online: obj['stream'] !== null
+                    }
+                } ) )
             .then ( resultArray => {
                 console.log(resultArray); 
                 return resultArray
@@ -32,5 +37,25 @@ Arguments should be strings`);
             .catch ( err => { console.error(err); } );
 } // returns promise object which can be used within another promise chain or evaluate by looking at PromiseValue
 
-fetchStatus('freecodecamp', 'TwitchPresents');
+
+function fetchDetails (...channels) {
+    Promise.all( channels.map( channel => fetch('https://wind-bow.glitch.me/twitch-api/channels/' + channel) ) )
+    .then ( responses => Promise.all( responses.map(response => response.json()) ) )
+    .then ( json => console.log (json) ) 
+}
+               /* json.map( (obj, i) => { 
+                    return {
+                        stream: streams[i],
+                        online: obj['stream'] !== null
+                    }
+                } ) )
+            .then ( resultArray => {
+                console.log(resultArray); 
+            } )*/
+
+const channels = ['freecodecamp', 'TwitchPresents']; // add channels to include in results in this array
+
+Promise.all (fetchStatus(...channels), fetchDetails(...channels))
+//fetchStatus(...channels);
+//fetchDetails(...channels);
 
