@@ -1,27 +1,18 @@
-
-/*
-EXAMPLE CALLS
-
-FOR ON/OFFLINE: 
-https://wind-bow.glitch.me/twitch-api/streams/freecodecamp
-
-FOR CHANNEL INFO AND ASSETS
-https://wind-bow.glitch.me/twitch-api/channels/freecodecamp
-*/
-
-function fetchStatus (...streams) {
-    //validate args
+function validateArgs (...channels) {
     try {
         const errorArray = [];
-        streams.map( (stream, i) => { if (typeof stream !== "string") errorArray.push(i); } );
+        channels.map( (channel, i) => { if (typeof channel !== "string") errorArray.push(i); } );
         if (errorArray.length > 0) throw new Error (
-            `fetchStatus called with ${errorArray.length} arguments of unsupported type in index ${errorArray}.
+            `${errorArray.length} arguments of unsupported type in index ${errorArray}.
 Arguments should be strings`);
     }
     catch (err) {
         console.error(err);
     }
-    return  Promise.all( streams.map( stream => fetch('https://wind-bow.glitch.me/twitch-api/streams/' + stream) ) )
+}
+
+function fetchStatus (...streams) {
+    return Promise.all( streams.map( stream => fetch('https://wind-bow.glitch.me/twitch-api/streams/' + stream) ) )
             .then ( responses => Promise.all( responses.map(response => response.json()) ) )
             .then ( json => 
                 json.map( (obj, i) => { 
@@ -32,17 +23,20 @@ Arguments should be strings`);
                 } ) )
             .then ( resultArray => {
                 console.log(resultArray); 
-                return resultArray
+                return resultArray;
             } )
             .catch ( err => { console.error(err); } );
 } // returns promise object which can be used within another promise chain or evaluate by looking at PromiseValue
 
 
 function fetchDetails (...channels) {
-    Promise.all( channels.map( channel => fetch('https://wind-bow.glitch.me/twitch-api/channels/' + channel) ) )
+     return Promise.all( channels.map( channel => fetch('https://wind-bow.glitch.me/twitch-api/channels/' + channel) ) )
     .then ( responses => Promise.all( responses.map(response => response.json()) ) )
-    .then ( json => console.log (json) ) 
+    .then ( json => {console.log (json);
+            return json} ) 
+    .catch ( err => { console.error(err); } );;
 }
+
                /* json.map( (obj, i) => { 
                     return {
                         stream: streams[i],
@@ -53,9 +47,21 @@ function fetchDetails (...channels) {
                 console.log(resultArray); 
             } )*/
 
-const channels = ['freecodecamp', 'TwitchPresents']; // add channels to include in results in this array
+function renderLists ({ stream , online } = {}) {
+    console.log('render');
+}
 
-Promise.all (fetchStatus(...channels), fetchDetails(...channels))
+const channels = ['freecodecamp', 'TwitchPresents']; // add channels to include in results in this array
+validateArgs(...channels);
+Promise.all ( [fetchDetails(...channels) , fetchStatus(...channels)] )
+    .then ( results => {
+        const [details , status] = results; //destructure results into two arrays
+
+        console.log(details, status);
+        renderLists();
+    }
+    )
+    .catch ( err => {console.error(err)} );
 //fetchStatus(...channels);
 //fetchDetails(...channels);
 
