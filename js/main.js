@@ -32,20 +32,19 @@ function fetchStatus (...streams) {
 function fetchDetails (...channels) {
      return Promise.all( channels.map( channel => fetch('https://wind-bow.glitch.me/twitch-api/channels/' + channel) ) )
     .then ( responses => Promise.all( responses.map(response => response.json()) ) )
-    .then ( json => {console.log (json);
-            return json} ) 
-    .catch ( err => { console.error(err); } );;
+    .then ( json =>
+        json.map( obj => {
+            const {display_name, logo, name, url, status} = obj;
+            return {display_name, logo, name, url, status};
+        } ) )
+    .then ( resultArray => {
+                console.log(resultArray); 
+                return resultArray;
+            } )
+    .catch ( err => { console.error(err); } );
 }
 
-               /* json.map( (obj, i) => { 
-                    return {
-                        stream: streams[i],
-                        online: obj['stream'] !== null
-                    }
-                } ) )
-            .then ( resultArray => {
-                console.log(resultArray); 
-            } )*/
+
 
 function renderLists ({ stream , online } = {}) {
     console.log('render');
