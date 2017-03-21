@@ -1,67 +1,26 @@
-function validateArgs (...channels) {
-    try {
-        const errorArray = [];
-        channels.map( (channel, i) => { if (typeof channel !== "string") errorArray.push(i); } );
-        if (errorArray.length > 0) throw new Error (
-            `${errorArray.length} arguments of unsupported type in index ${errorArray}.
-Arguments should be strings`);
-    }
-    catch (err) {
-        console.error(err);
-    }
-}
-
-/*
-function fetchStatus (...streams) {
-    return Promise.all( streams.map( stream => fetch('https://wind-bow.glitch.me/twitch-api/streams/' + stream) ) )
-            .then ( responses => Promise.all( responses.map(response => response.json()) ) )
-            .then ( json => 
-                json.map( (obj, i) => { 
-                    return {
-                        stream: streams[i],
-                        online: obj['stream'] !== null
-                    }
-                } ) )
-            .then ( resultArray => {
-                console.log(resultArray); 
-                return resultArray;
-            } )
-            .catch ( err => { console.error(err); } );
-} // returns promise object which can be used within another promise chain or evaluate by looking at PromiseValue
-
-function fetchDetails (...channels) {
-     return Promise.all( channels.map( channel => fetch('https://wind-bow.glitch.me/twitch-api/channels/' + channel) ) )
-    .then ( responses => Promise.all( responses.map(response => response.json()) ) )
-    .then ( json =>
-        json.map( obj => {
-            const {display_name, logo, name, url, status} = obj;
-            return {display_name, logo, name, url, status};
-        } ) )
-    .then ( resultArray => {
-                console.log(resultArray); 
-                return resultArray;
-            } )
-    .catch ( err => { console.error(err); } );
-}*/
-
-class fetchData {
+class FetchData {
     
     constructor(url, refineResultsCallback , ...channels) {
         this.url = url;
         this.refineResultsCallback = refineResultsCallback
         this.channels = channels;
         }
-    
+
+    run () {
+        this._validateArgs();
+        const promise = this._fetchFunc();
+        return promise;
+    }
 
     _validateArgs () {
     try {
         const errorArray = [];
-        channels.map( (channel, i) => { if (typeof channel !== "string") errorArray.push(i); } );
+        this.channels.map( (channel, i) => { if (typeof channel !== "string") errorArray.push(i); } );
         if (errorArray.length > 0) throw new Error (
             `${errorArray.length} arguments of unsupported type in index ${errorArray}.
 Arguments should be strings`);
-        if (typeof url !== 'string') throw new Error (`${url} should be a string but is a ${typeof url}.`);
-        if (typeof refineResultsCallback !== 'function') 
+        if (typeof this.url !== 'string') throw new Error (`${url} should be a string but is a ${typeof url}.`);
+        if (typeof this.refineResultsCallback !== 'function') 
             throw new Error (`refineResultsCallback passed into fetchData is not a function`);
     }
     catch (err) {
@@ -70,11 +29,11 @@ Arguments should be strings`);
 }
 
     _fetchFunc() {
-        _validateArgs (url, refineResultsCallback, ...channels);
-        return Promise.all( channels.map( channel => fetch(url + channel) ) )
+        this._validateArgs (this.url, this.refineResultsCallback, ...this.channels);
+        return Promise.all( this.channels.map( channel => fetch(this.url + channel) ) )
         .then ( responses => Promise.all( responses.map(response => response.json()) ) )
         .then ( json =>
-            json.map( refineResultsCallback ) )
+            json.map( this.refineResultsCallback ) )
          .then ( resultArray => {
                 console.log(resultArray); 
                 return resultArray;
@@ -82,32 +41,16 @@ Arguments should be strings`);
         .catch ( err => { console.error(err); } );
     }
 
+    
+
 } //end of fetchData class
-
-/*
-function fetchFunc (url, refineResultsCallback , ...channels) {
-     return Promise.all( channels.map( channel => fetch(url + channel) ) )
-    .then ( responses => Promise.all( responses.map(response => response.json()) ) )
-    .then ( json =>
-        json.map( refineResultsCallback ) )
-    .then ( resultArray => {
-                console.log(resultArray); 
-                return resultArray;
-            } )
-    .catch ( err => { console.error(err); } );
-}
-
-
-}
-*/
 
 function renderLists ({ stream , online } = {}) {
     console.log('render');
 }
 
 const channels = ['freecodecamp', 'TwitchPresents']; // add channels to include in results in this array
-//validateArgs(...channels);
-const fetchDetails = new fetchData (
+const fetchDetails = new FetchData (
     'https://wind-bow.glitch.me/twitch-api/channels/',
     obj => {
             const {display_name, logo, name, url, status} = obj;
@@ -115,7 +58,7 @@ const fetchDetails = new fetchData (
         },
         ...channels
 ),
-fetchStatus = new fetchData ( 
+fetchStatus = new FetchData ( 
     'https://wind-bow.glitch.me/twitch-api/streams/',
     (obj, i) => { 
             return {
@@ -126,7 +69,7 @@ fetchStatus = new fetchData (
     ...channels           
     );
 
-Promise.all ( [fetchDetails , fetchStatus] )
+Promise.all ( [fetchDetails.run() , fetchStatus.run()] )
     .then ( results => {
         const [details , status] = results; //destructure results into two arrays
         console.log(details, status);
@@ -134,6 +77,5 @@ Promise.all ( [fetchDetails , fetchStatus] )
     }
     )
     .catch ( err => {console.error(err)} );
-//fetchStatus(...channels);
-//fetchDetails(...channels);
+
 
