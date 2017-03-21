@@ -8,8 +8,8 @@ class FetchData {
 
     run () {
         this._validateArgs();
-        const promise = this._fetchFunc();
-        return promise;
+        const results = this._fetchFunc();
+        return results;
     }
 
     _validateArgs () {
@@ -41,16 +41,15 @@ Arguments should be strings`);
         .catch ( err => { console.error(err); } );
     }
 
-    
-
 } //end of fetchData class
 
 function renderLists ({ stream , online } = {}) {
     console.log('render');
 }
 
-const channels = ['freecodecamp', 'TwitchPresents']; // add channels to include in results in this array
-const fetchDetails = new FetchData (
+const channels = ['freecodecamp', 'TwitchPresents'], // add channels to include in results in this array
+
+fetchDetails = new FetchData (
     'https://wind-bow.glitch.me/twitch-api/channels/',
     obj => {
             const {display_name, logo, name, url, status} = obj;
@@ -58,6 +57,7 @@ const fetchDetails = new FetchData (
         },
         ...channels
 ),
+
 fetchStatus = new FetchData ( 
     'https://wind-bow.glitch.me/twitch-api/streams/',
     (obj, i) => { 
@@ -73,9 +73,17 @@ Promise.all ( [fetchDetails.run() , fetchStatus.run()] )
     .then ( results => {
         const [details , status] = results; //destructure results into two arrays
         console.log(details, status);
+        const smushed = details.map ( (dObj, i) => {
+            const channelStatus = status.find ( sObj => sObj.stream.toLowerCase() === dObj.name.toLowerCase() );
+            if (channelStatus) { dObj.online = channelStatus.online }
+            else { throw new Error (`Could not match status and details objects for ${dObj.online} at index ${i}`) }
+            return dObj;
+        } );
+        console.log(smushed);
+        
         renderLists()
-    }
-    )
+        
+    })
     .catch ( err => {console.error(err)} );
 
 
