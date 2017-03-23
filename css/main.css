@@ -6,6 +6,7 @@ ul, #channel-list li {
 
 body {
   background-color: #0e9dd9;
+  color: #000;
   margin: 0; }
 
 header, nav {
@@ -29,6 +30,10 @@ ul {
   list-style: none;
   justify-content: flex-end;
   align-items: stretch; }
+
+a {
+  text-decoration: none;
+  color: #000; }
 
 .tab {
   flex-basis: 4rem;
@@ -65,37 +70,50 @@ ul {
   height: 70px; }
 
 .online {
-  background-color: #724ea8; }
-  .online > .logo {
+  background-color: #724ea8;
+  color: silver; }
+  .online li > .logo {
     border: 2px solid #1ae20d; }
 
 .offline {
   background-color: #c7c7c7; }
-  .offline > .logo {
+  .offline li > .logo {
     border: 2px solid #fafafa;
     filter: grayscale(100%);
     background-color: #c7c7c7; }
 
 .channelname {
   flex-grow: 1;
-  flex-shrink: 0;
-  flex-basis: 1; }
+  flex-shrink: 2;
+  flex-basis: 10em;
+  text-transform: uppercase; }
+
+.statusmsg {
+  flex-grow: 2;
+  flex-shrink: 1;
+  flex-basis: 12em;
+  text-align: left; }
 
 #channel-list {
   justify-content: flex-start;
   flex-flow: column nowrap;
   padding: 1.5em;
   min-height: 100%; }
+  #channel-list > a {
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+    border-left: 1px solid #000; }
+    #channel-list > a:first-of-type {
+      border-radius: 6px 6px 0 0;
+      border-top: 1px solid #000; }
+    #channel-list > a:last-of-type {
+      border-radius: 0 0 6px 6px; }
   #channel-list li {
     flex-flow: row wrap;
     justify-content: center;
-    border: 1px solid #000;
+    border: none;
     border-top: none;
     padding: 0.5em; }
-    #channel-list li:first-of-type {
-      border-radius: 6px 6px 0 0; }
-    #channel-list li:last-of-type {
-      border-radius: 0 0 6px 6px; }
     #channel-list li * {
       margin: 0.5em; }
 

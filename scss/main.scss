@@ -1,9 +1,9 @@
 $header-col: #5a3e85;
 $canvas-col:  #0e9dd9;
 $inactive-col: #fafafa;
-$online-col: lighten(#5a3e85, 10%);
+$online-col: lighten($header-col, 10%);
 $online-col-secondary: #1ae20d;
-$offline-col: darken(#fafafa, 20%);
+$offline-col: darken($inactive-col, 20%);
 
 %flex {
     display: flex;
@@ -14,6 +14,7 @@ $offline-col: darken(#fafafa, 20%);
 
 body {
     background-color: $canvas-col;
+    color: #000;
     margin: 0;
 }
 
@@ -46,6 +47,11 @@ ul {
     list-style: none;
     justify-content: flex-end;
     align-items: stretch;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
 }
 
 .tab {
@@ -101,14 +107,15 @@ ul {
 
 .online {
     background-color: $online-col;
-    &>.logo {
+    color: silver;
+    & li >.logo {
         border: 2px solid $online-col-secondary;
     }
 }
 
 .offline {
     background-color: $offline-col;
-    &>.logo {
+    & li >.logo {
         border: 2px solid $inactive-col;
         filter: grayscale(100%);
         background-color: $offline-col;
@@ -117,28 +124,43 @@ ul {
 
 .channelname {
     flex-grow: 1;
-    flex-shrink: 0;
-    flex-basis: 1;
+    flex-shrink: 2;
+    flex-basis: 10em;
+    text-transform: uppercase;
+}
+
+.statusmsg {
+    flex-grow: 2;
+    flex-shrink: 1;
+    flex-basis: 12em;
+    text-align: left;
 }
 
 #channel-list{
+    $list-border: 1px solid #000;
     justify-content: flex-start;
     flex-flow: column nowrap;
     padding: 1.5em;
     min-height: 100%;
-    & li {
-        @extend %flex;   
-        flex-flow: row wrap;
-        justify-content: center;
-        border: 1px solid #000;
-        border-top: none;
-        padding: 0.5em;
+    &> a {
+        border-right: $list-border;
+        border-bottom: $list-border;
+        border-left: $list-border;
         &:first-of-type { 
             border-radius: 6px 6px 0 0;
+            border-top: $list-border;
         }
         &:last-of-type { 
             border-radius: 0 0 6px 6px;
         }
+    }
+    & li {
+        @extend %flex;   
+        flex-flow: row wrap;
+        justify-content: center;
+        border: none;
+        border-top: none;
+        padding: 0.5em;
         & * {
             margin: 0.5em;
         }
