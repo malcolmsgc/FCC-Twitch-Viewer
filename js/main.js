@@ -43,11 +43,15 @@ Arguments should be strings`);
 
 } //end of fetchData class
 
+//MAIN SCRIPT THREAD
+
+
+
 function renderLists ({ stream , online } = {}) {
     console.log('render');
 }
 
-const channels = ['freecodecamp', 'TwitchPresents'], // add channels to include in results in this array
+const channels = ['freecodecamp', 'TwitchPresents', 'cretetion', 'storbeck'], // add channels to include in results in this array
 
 fetchDetails = new FetchData (
     'https://wind-bow.glitch.me/twitch-api/channels/',
@@ -74,6 +78,14 @@ Promise.all ( [fetchDetails.run() , fetchStatus.run()] )
         const [details , status] = results; //destructure results into two arrays
         console.log(details, status);
         const smushed = details.map ( (dObj, i) => {
+            //check for non-existent channels
+            if (!dObj.name || dObj.status === 404) {
+                 dObj.name = channels[i];
+                 dObj.display_name = channels[i];
+                 dObj.logo = "http://placehold.it/80x80?text=?";
+                 dObj.status = 'This channel does not exist';
+                 dObj.url = "#";
+            }
             const channelStatus = status.find ( sObj => sObj.stream.toLowerCase() === dObj.name.toLowerCase() );
             if (channelStatus) { dObj.online = channelStatus.online }
             else { throw new Error (`Could not match status and details objects for ${dObj.online} at index ${i}`) }
