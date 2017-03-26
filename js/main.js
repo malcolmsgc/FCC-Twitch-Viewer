@@ -68,8 +68,30 @@ function sortChannels (reducedResults) { //takes array, sorts alphabetically, fi
     }
 }
 
-function renderLists ({ stream , online } = {}) {
-    console.log('render');
+function renderList (statusArray) {
+    const channelList = document.querySelector('#channel-list');
+    let markup = '';
+    for (obj of statusArray) {
+                if (obj.online) {
+                markup += `<a href=${obj.url} class="online">
+                    <li>
+                        <img class="logo" src=${obj.logo} />
+                        <div class="channelname">${obj.display_name}</div>
+                        <div class="statusmsg">${obj.status}</div>
+                    </li>
+                </a>`
+            }
+            else {
+                markup += `<a href=${obj.url} class="offline">
+                    <li>
+                        <img class="logo" src=${obj.logo} />
+                        <div class="channelname">${obj.display_name}</div>
+                        <div class="statusmsg">${obj.status}</div>
+                    </li>
+                </a>`
+            }
+    }
+    channelList.innerHTML = markup;
 }
 
 const channels = ['freecodecamp', 'TwitchPresents', 'cretetion', 'storbeck'], // add channels to include in results in this array
@@ -115,7 +137,7 @@ Promise.all ( [fetchDetails.run() , fetchStatus.run()] )
         console.log(smushed);
         const sortedChannels = sortChannels(smushed);
         console.log(sortedChannels);
-        renderLists()
+        renderList (sortedChannels.all_Ordered);
         
     })
     .catch ( err => {console.error(err)} );
