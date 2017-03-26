@@ -46,6 +46,27 @@ Arguments should be strings`);
 //MAIN SCRIPT THREAD
 
 
+function sortChannels (reducedResults) { //takes array, sorts alphabetically, filters between on/offline and produces object of 3 arrays
+    let online = [],
+        offline = [];
+    const all_Ordered = reducedResults.sort (
+        (nameA, nameB) => {
+            const name_A = nameA.display_name.toLowerCase();
+            const name_B = nameB.display_name.toLowerCase();
+            if (name_A < name_B) {return -1}
+            if (name_A > name_B) {return 1}
+            else return 0;
+        });
+        all_Ordered.map(
+            obj => { obj.online ? online.push(obj) : offline.push(obj);}
+        ); 
+    console.log('Sorted arrays created');
+    return {
+        all_Ordered,
+        online,
+        offline
+    }
+}
 
 function renderLists ({ stream , online } = {}) {
     console.log('render');
@@ -92,7 +113,8 @@ Promise.all ( [fetchDetails.run() , fetchStatus.run()] )
             return dObj;
         } );
         console.log(smushed);
-        
+        const sortedChannels = sortChannels(smushed);
+        console.log(sortedChannels);
         renderLists()
         
     })
