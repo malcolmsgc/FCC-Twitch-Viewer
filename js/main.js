@@ -95,25 +95,35 @@ function sortChannels (reducedResults) { //takes array, sorts alphabetically, fi
 function renderList (statusArray) {
     const channelList = document.querySelector('#channel-list');
     let markup = '';
-    for (obj of statusArray) {
-                if (obj.online) {
-                markup += `<a href=${obj.url} class="online">
+    console.log('clear list');
+    if (statusArray.length < 1) {
+        markup += `<a href='#' class="offline">
                     <li>
-                        <img class="logo" src=${obj.logo} />
-                        <div class="channelname">${obj.display_name}</div>
-                        <div class="statusmsg">${obj.status}</div>
+                        <div>There are no results for this status</div>
                     </li>
                 </a>`
-            }
-            else {
-                markup += `<a href=${obj.url} class="offline">
-                    <li>
-                        <img class="logo" src=${obj.logo} />
-                        <div class="channelname">${obj.display_name}</div>
-                        <div class="statusmsg">${obj.status}</div>
-                    </li>
-                </a>`
-            }
+    }
+    else {
+        for (obj of statusArray) {
+                    if (obj.online) {
+                    markup += `<a href=${obj.url} class="online">
+                        <li>
+                            <img class="logo" src=${obj.logo} />
+                            <div class="channelname">${obj.display_name}</div>
+                            <div class="statusmsg">${obj.status}</div>
+                        </li>
+                    </a>`
+                }
+                else {
+                    markup += `<a href=${obj.url} class="offline">
+                        <li>
+                            <img class="logo" src=${obj.logo} />
+                            <div class="channelname">${obj.display_name}</div>
+                            <div class="statusmsg">${obj.status}</div>
+                        </li>
+                    </a>`
+                }
+        }
     }
     channelList.innerHTML = markup;
 }
@@ -158,9 +168,9 @@ Promise.all ( [fetchDetails.run() , fetchStatus.run()] )
     })
     .then ( sortedChannels => { 
         renderList (sortedChannels.all_Ordered); //render default view
-        tabOnline.addEventListener ( 'click' , function(){alert('online')} );
-        tabOffline.addEventListener ( 'click' , function(){alert('offline')} );
-        tabAll.addEventListener ( 'click' , function(){alert('all')} );
+        tabOnline.addEventListener ( 'click' , renderList.bind (this, sortedChannels.online));
+        tabOffline.addEventListener ( 'click' , function(){renderList (sortedChannels.offline)} );
+        tabAll.addEventListener ( 'click' , function(){renderList (sortedChannels.all_Ordered);} );
         return
     })
     .catch ( err => {console.error(err)} );
