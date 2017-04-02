@@ -154,6 +154,9 @@ a {
         &:last-of-type { 
             border-radius: 0 0 6px 6px;
         }
+        &:only-of-type { 
+            border-radius: 6px;
+            }
     }
     & li {
         @extend %flex;   

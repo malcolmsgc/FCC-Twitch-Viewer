@@ -44,7 +44,7 @@ Arguments should be strings`);
 } //end of fetchData class
 
 //Main vars and functions
-const channels = ['freecodecamp', 'TwitchPresents', 'cretetion', 'storbeck'], // add channels to include in results in this array
+const channels = ['freecodecamp', 'TwitchPresents', 'cretetion', 'storbeck', 'gearsofwar', 'ESL_SC2', 'OgamingSC2', 'habathcx', 'RobotCaleb', 'noobs2ninjas'], // add channels to include in results in this array
         tabAll = document.querySelector('#tab-all');
         tabOnline = document.querySelector('#tab-online');
         tabOffline = document.querySelector('#tab-offline');
@@ -95,7 +95,6 @@ function sortChannels (reducedResults) { //takes array, sorts alphabetically, fi
 function renderList (statusArray) {
     const channelList = document.querySelector('#channel-list');
     let markup = '';
-    console.log('clear list');
     if (statusArray.length < 1) {
         markup += `<a href='#' class="offline">
                     <li>
@@ -129,15 +128,14 @@ function renderList (statusArray) {
 }
 
 //TO DO: refactor this into class, add method to generate event listeners on tabs
-const switchTab = function ( statusArray , ObjofArrays ) { //  = sortedChannels /possible args for statusArray: all_Ordered, online, offline
-    const   tabs = Array.from(document.querySelectorAll('.tab'));
-            liItems = Array.from(document.querySelectorAll('#channel-list > *'));
-            channelList = document.querySelector('#channel-list');
-    event.stopPropagation();
+const switchTab = function ( event, statusArray ) {
+    const   tabs = Array.from(document.querySelectorAll('.tab')),
+            liItems = Array.from(document.querySelectorAll('#channel-list > *')),
+            target = event.target || event.srcElement;
     tabs.forEach(tab => {tab.classList.remove('active-tab')});
     liItems.forEach(item => {item.remove()});
-    //this.classList.add('active-tab');
-    //renderList (ObjofArrays[statusArray]);
+    target.classList.add('active-tab');
+    renderList ( statusArray );
 }
 
 
@@ -168,9 +166,16 @@ Promise.all ( [fetchDetails.run() , fetchStatus.run()] )
     })
     .then ( sortedChannels => { 
         renderList (sortedChannels.all_Ordered); //render default view
-        tabOnline.addEventListener ( 'click' , renderList.bind (this, sortedChannels.online));
-        tabOffline.addEventListener ( 'click' , function(){renderList (sortedChannels.offline)} );
-        tabAll.addEventListener ( 'click' , function(){renderList (sortedChannels.all_Ordered);} );
+        //Click handlers on tabs
+        tabOnline.addEventListener ( 'click' , function(event) {
+            switchTab (event , sortedChannels.online )
+        } );
+        tabOffline.addEventListener ( 'click' , function(event) {
+            switchTab (event , sortedChannels.offline )
+        } );
+        tabAll.addEventListener ( 'click' , function (event) {
+            switchTab (event , sortedChannels.all_Ordered)
+        } );
         return
     })
     .catch ( err => {console.error(err)} );
