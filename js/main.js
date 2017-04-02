@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------------------------------------------------
+CLASSES
+---------------------------------------------------------------------------------------------------------------------*/
+
 class FetchData {
     
     constructor(url, refineResultsCallback , ...channels) {
@@ -43,7 +47,22 @@ Arguments should be strings`);
 
 } //end of fetchData class
 
-//Main vars and functions
+//TO DO: refactor this into class, add method to generate event listeners on tabs
+const switchTab = function ( event, statusArray ) {
+    const   tabs = Array.from(document.querySelectorAll('.tab')),
+            liItems = Array.from(document.querySelectorAll('#channel-list > *')),
+            target = event.target || event.srcElement;
+    tabs.forEach(tab => {tab.classList.remove('active-tab')});
+    liItems.forEach(item => {item.remove()});
+    target.classList.add('active-tab');
+    renderList ( statusArray );
+}
+
+
+/*---------------------------------------------------------------------------------------------------------------------
+MAIN VARS AND FUNCTIONS 
+to do -- create namespace for these to prevent them being globals
+---------------------------------------------------------------------------------------------------------------------*/
 const channels = ['freecodecamp', 'TwitchPresents', 'cretetion', 'storbeck', 'gearsofwar', 'ESL_SC2', 'OgamingSC2', 'habathcx', 'RobotCaleb', 'noobs2ninjas'], // add channels to include in results in this array
         tabAll = document.querySelector('#tab-all');
         tabOnline = document.querySelector('#tab-online');
@@ -127,20 +146,13 @@ function renderList (statusArray) {
     channelList.innerHTML = markup;
 }
 
-//TO DO: refactor this into class, add method to generate event listeners on tabs
-const switchTab = function ( event, statusArray ) {
-    const   tabs = Array.from(document.querySelectorAll('.tab')),
-            liItems = Array.from(document.querySelectorAll('#channel-list > *')),
-            target = event.target || event.srcElement;
-    tabs.forEach(tab => {tab.classList.remove('active-tab')});
-    liItems.forEach(item => {item.remove()});
-    target.classList.add('active-tab');
-    renderList ( statusArray );
-}
 
 
 
-//MAIN SCRIPT THREAD
+/*---------------------------------------------------------------------------------------------------------------------
+MAIN SCRIPT THREAD
+---------------------------------------------------------------------------------------------------------------------*/
+
 Promise.all ( [fetchDetails.run() , fetchStatus.run()] )
     .then ( results => {
         const [details , status] = results; //destructure results into two arrays
