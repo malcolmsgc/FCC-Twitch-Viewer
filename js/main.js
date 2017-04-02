@@ -45,76 +45,46 @@ Arguments should be strings`);
         .catch ( err => { console.error(err); } );
     }
 
-} //end of fetchData class
+} //end of FetchData class
 
-//TO DO: refactor this into class, add method to generate event listeners on tabs
-const switchTab = function ( event, statusArray ) {
-    const   tabs = Array.from(document.querySelectorAll('.tab')),
-            liItems = Array.from(document.querySelectorAll('#channel-list > *')),
-            target = event.target || event.srcElement;
-    tabs.forEach(tab => {tab.classList.remove('active-tab')});
-    liItems.forEach(item => {item.remove()});
-    target.classList.add('active-tab');
-    renderList ( statusArray );
-}
+class DisplayData {
 
-
-/*---------------------------------------------------------------------------------------------------------------------
-MAIN VARS AND FUNCTIONS 
-to do -- create namespace for these to prevent them being globals
----------------------------------------------------------------------------------------------------------------------*/
-const channels = ['freecodecamp', 'TwitchPresents', 'cretetion', 'storbeck', 'gearsofwar', 'ESL_SC2', 'OgamingSC2', 'habathcx', 'RobotCaleb', 'noobs2ninjas'], // add channels to include in results in this array
-        tabAll = document.querySelector('#tab-all');
-        tabOnline = document.querySelector('#tab-online');
-        tabOffline = document.querySelector('#tab-offline');
-
-fetchDetails = new FetchData (
-    'https://wind-bow.glitch.me/twitch-api/channels/',
-    obj => {
-            const {display_name, logo, name, url, status} = obj;
-            return {display_name, logo, name, url, status};
-        },
-        ...channels
-),
-
-fetchStatus = new FetchData ( 
-    'https://wind-bow.glitch.me/twitch-api/streams/',
-    (obj, i) => { 
-            return {
-                stream: channels[i],
-                online: obj['stream'] !== null
-            }
-    },
-    ...channels           
-    );
-
-
-function sortChannels (reducedResults) { //takes array, sorts alphabetically, filters between on/offline and produces object of 3 arrays
-    let online = [],
-        offline = [];
-    const all_Ordered = reducedResults.sort (
-        (nameA, nameB) => {
-            const name_A = nameA.display_name.toLowerCase();
-            const name_B = nameB.display_name.toLowerCase();
-            if (name_A < name_B) {return -1}
-            if (name_A > name_B) {return 1}
-            else return 0;
-        });
-        all_Ordered.map(
-            obj => { obj.online ? online.push(obj) : offline.push(obj);}
-        ); 
-    console.log('Sorted arrays created');
-    return {
-        all_Ordered,
-        online,
-        offline
+    constructor ( channelsObj ) {
+        this.channelsObj = channelsObj;
+        this.channelList = document.querySelector('#channel-list');
+        this.tabs = Array.from(document.querySelectorAll('.tab'));
+        this.liItems = Array.from(document.querySelectorAll('#channel-list > *'));
+        this.tabAll = document.querySelector('#tab-all');
+        this.tabOnline = document.querySelector('#tab-online');
+        this.tabOffline = document.querySelector('#tab-offline');
     }
-}
 
-function renderList (statusArray) {
-    const channelList = document.querySelector('#channel-list');
+// Event listeners bombing because vars unavailable after closure
+
+    run () {
+            this._renderList ( this.channelsObj.all_Ordered );
+            this.tabOnline.addEventListener ( 'click' , function(event) {
+                TWITCH._switchTab (event , this.channelsObj.online )
+            } );
+            this.tabOffline.addEventListener ( 'click' , function(event) {
+                TWITCH._switchTab (event , this.channelsObj.offline )
+            } );
+            this.tabAll.addEventListener ( 'click' , function (event) {
+                TWITCH._switchTab (event , this.channelsObj.all_Ordered)
+            } );
+        }
+
+    _switchTab ( event, statusArray, className = 'active-tab' ) {
+    const target = event.target || event.srcElement;
+    this.tabs.forEach(tab => {tab.classList.remove(className)});
+    this.liItems.forEach(item => {item.remove()});
+    target.classList.add(className);
+    this._renderList ( statusArray );
+    }
+
+    _renderList ( statusArray ) {
     let markup = '';
-    if (statusArray.length < 1) {
+    if ( statusArray.length < 1 ) {
         markup += `<a href='#' class="offline">
                     <li>
                         <div>There are no results for this status</div>
@@ -122,7 +92,7 @@ function renderList (statusArray) {
                 </a>`
     }
     else {
-        for (obj of statusArray) {
+        for (let obj of statusArray ) {
                     if (obj.online) {
                     markup += `<a href=${obj.url} class="online">
                         <li>
@@ -143,11 +113,57 @@ function renderList (statusArray) {
                 }
         }
     }
-    channelList.innerHTML = markup;
+    this.channelList.innerHTML = markup;
 }
 
+} //end of DisplayData class
 
+/*---------------------------------------------------------------------------------------------------------------------
+MAIN VARS AND FUNCTIONS 
+---------------------------------------------------------------------------------------------------------------------*/
+const TWITCH = {    channels : ['freecodecamp', 'TwitchPresents', 'cretetion', 'storbeck', 'gearsofwar', 'ESL_SC2', 'OgamingSC2', 'habathcx', 'RobotCaleb', 'noobs2ninjas'],
+                    _sortChannels (reducedResults) { //takes array, sorts alphabetically, filters between on/offline and produces object of 3 arrays
+                        let online = [],
+                            offline = [];
+                        const all_Ordered = reducedResults.sort (
+                            (nameA, nameB) => {
+                                const name_A = nameA.display_name.toLowerCase();
+                                const name_B = nameB.display_name.toLowerCase();
+                                if (name_A < name_B) {return -1}
+                                if (name_A > name_B) {return 1}
+                                else return 0;
+                            });
+                            all_Ordered.map(
+                                obj => { obj.online ? online.push(obj) : offline.push(obj);}
+                            ); 
+                        console.log('Sorted arrays created');
+                        return {
+                            all_Ordered,
+                            online,
+                            offline
+                        }
+                    }
+},
 
+fetchDetails = new FetchData (
+    'https://wind-bow.glitch.me/twitch-api/channels/',
+    obj => {
+            const {display_name, logo, name, url, status} = obj;
+            return {display_name, logo, name, url, status};
+        },
+        ...TWITCH.channels
+),
+
+fetchStatus = new FetchData ( 
+    'https://wind-bow.glitch.me/twitch-api/streams/',
+    (obj, i) => { 
+            return {
+                stream: TWITCH.channels[i],
+                online: obj['stream'] !== null
+            }
+    },
+    ...TWITCH.channels           
+    );
 
 /*---------------------------------------------------------------------------------------------------------------------
 MAIN SCRIPT THREAD
@@ -160,8 +176,8 @@ Promise.all ( [fetchDetails.run() , fetchStatus.run()] )
         const smushed = details.map ( (dObj, i) => {
             //check for non-existent channels
             if (!dObj.name || dObj.status === 404) {
-                 dObj.name = channels[i];
-                 dObj.display_name = channels[i];
+                 dObj.name = TWITCH.channels[i];
+                 dObj.display_name = TWITCH.channels[i];
                  dObj.logo = "http://placehold.it/70x70?text=😟";
                  dObj.status = 'This channel does not exist';
                  dObj.url = "#";
@@ -172,23 +188,14 @@ Promise.all ( [fetchDetails.run() , fetchStatus.run()] )
             return dObj;
         } );
         console.log(smushed);
-        const sortedChannels = sortChannels(smushed);
+        const sortedChannels = TWITCH._sortChannels(smushed);
         console.log(sortedChannels);
         return sortedChannels;
     })
     .then ( sortedChannels => { 
-        renderList (sortedChannels.all_Ordered); //render default view
-        //Click handlers on tabs
-        tabOnline.addEventListener ( 'click' , function(event) {
-            switchTab (event , sortedChannels.online )
-        } );
-        tabOffline.addEventListener ( 'click' , function(event) {
-            switchTab (event , sortedChannels.offline )
-        } );
-        tabAll.addEventListener ( 'click' , function (event) {
-            switchTab (event , sortedChannels.all_Ordered)
-        } );
-        return
+        const displayData = new DisplayData( sortedChannels );
+        displayData.run();
+        return;
     })
     .catch ( err => {console.error(err)} );
 
