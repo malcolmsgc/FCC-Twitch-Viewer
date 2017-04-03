@@ -63,14 +63,14 @@ class DisplayData {
 
     run () {
             this._renderList ( this.channelsObj.all_Ordered );
-            this.tabOnline.addEventListener ( 'click' , function(event) {
-                TWITCH._switchTab (event , this.channelsObj.online )
+            this.tabOnline.addEventListener ( 'click' , (event) => {
+                this._switchTab (event , this.channelsObj.online )
             } );
-            this.tabOffline.addEventListener ( 'click' , function(event) {
-                TWITCH._switchTab (event , this.channelsObj.offline )
+            this.tabOffline.addEventListener ( 'click' , (event) => {
+                this._switchTab (event , this.channelsObj.offline )
             } );
-            this.tabAll.addEventListener ( 'click' , function (event) {
-                TWITCH._switchTab (event , this.channelsObj.all_Ordered)
+            this.tabAll.addEventListener ( 'click' , (event) => {
+                this._switchTab (event , this.channelsObj.all_Ordered)
             } );
         }
 
