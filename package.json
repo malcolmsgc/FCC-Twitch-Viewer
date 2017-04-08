@@ -1,0 +1,22 @@
+{
+  "name": "twitchtv_ch-status",
+  "version": "1.0.0",
+  "description": "Task on Free Code Camp curriculum",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malcolmsgc/FCC-Twitch-Viewer.git"
+  },
+  "author": "Malcolm Cumming",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/malcolmsgc/FCC-Twitch-Viewer/issues"
+  },
+  "homepage": "https://github.com/malcolmsgc/FCC-Twitch-Viewer#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
